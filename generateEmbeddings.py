@@ -8,7 +8,7 @@ file_path = 'Machine.csv'
 
 df = pd.read_csv(file_path)
 # Encode categorical columns
-cat_columns = ['machine','core']  # Add more categorical column names if you have any
+cat_columns = ['machine','core']  
 label_encoders = {col: LabelEncoder() for col in cat_columns}
 
 for col in cat_columns:
@@ -23,7 +23,7 @@ X = df.drop(['target_column'], axis=1, errors='ignore')  # Drop target column if
 # Use the adjusted parameters based on your dataset
 N_machine = len(label_encoders['machine'].classes_)  # Number of unique machines
 N_core = len(label_encoders['core'].classes_)  
-E_machine = 10   # Example embedding dimension
+E_machine = 10
 E_core = 5
 cat_dims = [N_machine, N_core]
 cat_idxs = [X.columns.get_loc('machine'), X.columns.get_loc('core')]
