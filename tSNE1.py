@@ -2,44 +2,67 @@ import pandas as pd
 import numpy as np
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
+from itertools import cycle
 
-# Load the embeddings data from the provided text (pre-processed into CSV format for loading convenience)
-# The data seems to be provided as a list with a length of 78 for each embedding
-# The actual embedding vectors are comma-separated and the first value seems to be an index
-# For convenience, the data was pre-processed into a CSV with 78 columns (first one being the index)
-# The file was saved with the name "embeddings.csv"
+# Load the CSV file
+df = pd.read_csv('embeddings1.csv')
 
-# Function to process the embeddings and perform t-SNE
-def process_embeddings(file_path):
-    # Read the CSV file, assuming the first column is an index
-    embeddings_df = pd.read_csv(file_path, index_col=0)
+# Replace NaN values with the mean of their respective columns
+df.iloc[:, 1:] = df.iloc[:, 1:].fillna(df.iloc[:, 1:].mean())
 
-    # Check if there are any missing values and fill them with the mean of the column
-    if embeddings_df.isnull().values.any():
-        embeddings_df.fillna(embeddings_df.mean(), inplace=True)
+# Assuming the first column contains the labels
+labels = df.iloc[:, 0]
+features = df.iloc[:, 1:]
+
+# Apply t-SNE
+tsne = TSNE(n_components=2, 
+            perplexity=8, 
+            early_exaggeration=1,
+            learning_rate='auto',
+            n_iter=1000, 
+            random_state=42
+        )
+tsne_results = tsne.fit_transform(features)
+
+# Plotting setup
+plt.figure(figsize=(10, 8))
+unique_labels = np.unique(labels)
+
+# Manually specified sharp colors
+sharp_colors = [
+    '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', 
+    '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', 
+    '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', 
+    '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', 
+    '#ffffff', '#000000'
+]
+
+if len(unique_labels) > len(sharp_colors):
+    color_cycle = cycle(sharp_colors)
+    label_to_color = {label: next(color_cycle) for label in unique_labels}
+else:
+    label_to_color = dict(zip(unique_labels, sharp_colors))
+
+# Define a cycle of markers
+markers = cycle(['o', 'x', '^', '>', '<', 'p', '*', 'h', 'H', '+', 'D', 'd', '|', '_'])
+
+added_to_legend = {label: False for label in unique_labels}
+
+for i in range(len(df)):
+    marker = next(markers)  
+    label = labels.iloc[i]
+    color = label_to_color[label]
     
-    # Run t-SNE
-    tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=300)
-    tsne_results = tsne.fit_transform(embeddings_df)
-    
-    return tsne_results
+    if not added_to_legend[label]:
+        plt.scatter(tsne_results[i, 0], tsne_results[i, 1], label=label, marker=marker, color=color)
+        added_to_legend[label] = True  
+    else:
+        plt.scatter(tsne_results[i, 0], tsne_results[i, 1], marker=marker, color=color)
 
-# Process the embeddings
-file_path = 'embeddings.csv' # Update with the correct path if necessary
-tsne_results = process_embeddings(file_path)
-
-# Number of embeddings
-num_embeddings = tsne_results.shape[0]
-
-# Generate color labels (assumption: each set of 15 embeddings should have the same color, and there are 76 embeddings)
-num_colors = num_embeddings // 15 + (num_embeddings % 15 > 0)
-colors = np.tile(np.arange(num_colors), 15)[:num_embeddings]
-
-# Plot t-SNE results
-plt.figure(figsize=(8, 5))
-plt.scatter(tsne_results[:, 0], tsne_results[:, 1], c=colors, cmap='viridis', alpha=0.5)
-plt.colorbar()
-plt.title('t-SNE visualization of embeddings')
-plt.xlabel('t-SNE component 1')
-plt.ylabel('t-SNE component 2')
+plt.legend(title="Labels", bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.title('t-SNE plot of the dataset')
+plt.xlabel('t-SNE feature 1')
+plt.ylabel('t-SNE feature 2')
+plt.tight_layout()  
 plt.show()
+

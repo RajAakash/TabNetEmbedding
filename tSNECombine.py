@@ -21,7 +21,7 @@ def createPlot(tsne_results):
     plt.show()
 
 def main():
-    filepath = 'embeddings.csv'  # Path to your CSV file
+    filepath = 'embeddings.csv' 
     tsne_results = processData(filepath)
     createPlot(tsne_results)
 
