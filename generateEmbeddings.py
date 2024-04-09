@@ -4,11 +4,11 @@ import torch
 import numpy as np
 from tab_network import EmbeddingGenerator
 
-file_path = 'sourceFolder/miniVite/miniVite-cq.csv'
+file_path = 'Machine.csv'
 
 df = pd.read_csv(file_path)
 # Encode categorical columns
-cat_columns = ['machine','app']  
+cat_columns = ['machine','core']  
 label_encoders = {col: LabelEncoder() for col in cat_columns}
 
 for col in cat_columns:
@@ -23,11 +23,11 @@ X = df.drop(['target_column'], axis=1, errors='ignore')  # Drop target column if
 # Use the adjusted parameters based on your dataset
 N_machine = len(label_encoders['machine'].classes_)  # Number of unique machines
 print(N_machine)
-N_core = len(label_encoders['app'].classes_)  
+N_core = len(label_encoders['core'].classes_)  
 E_machine = 10
 E_core = 5
 cat_dims = [N_machine, N_core]
-cat_idxs = [X.columns.get_loc('machine'), X.columns.get_loc('app')]
+cat_idxs = [X.columns.get_loc('machine'), X.columns.get_loc('core')]
 cat_emb_dims = [E_machine, E_core]
 # Adjust based on actual features + embedding dimension - 1 (for the encoded column)
 input_dim = X.shape[1] 
@@ -48,6 +48,6 @@ X_tensor = torch.tensor(X.values, dtype=torch.float32)
 embeddings = embedding_generator.forward(X_tensor)
 embeddings_df = pd.DataFrame(embeddings.detach().numpy())
 print(embeddings)
-embeddings_df.to_csv('embeddings_summary/miniVite/miniVite-cq_embeddings.csv', index=False)
+embeddings_df.to_csv('MachineEmbeddings/embeddings10_5s.csv', index=False)
 print(embeddings.shape)
 print(df.shape)
