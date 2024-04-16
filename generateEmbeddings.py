@@ -4,7 +4,7 @@ import torch
 import numpy as np
 from tab_network import EmbeddingGenerator
 
-file_path = 'ds_train_n1-1.csv'
+file_path = r"C:/Users/ACER/Downloads/Quartz-machine.csv"
 
 df = pd.read_csv(file_path)
 X_title=df['app']
@@ -43,6 +43,6 @@ embeddings_df['app']=X_title
 columns = ['app'] + [col for col in embeddings_df.columns if col != 'app']
 embeddings_df = embeddings_df[columns]
 print(embeddings)
-embeddings_df.to_csv('appEmbeddings/appEmbeddings20_30.csv', index=False)
+embeddings_df.to_csv("C:/Users/ACER/Downloads/averageAppEmbeddings.csv", index=False)
 print(embeddings.shape)
 print(df.shape)
