@@ -14,13 +14,13 @@ except ImportError:
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'kaleido'])
 
 # Load the CSV file
-df = pd.read_csv('../machineEmbedding/machineEmbeddings_10.csv')
+df = pd.read_csv('../machineEmbedding/machineEmbeddings_25.csv')
 
 # Replace NaN values with the mean of their respective columns
 df.iloc[:, 1:] = df.iloc[:, 1:].fillna(df.iloc[:, 1:].mean())
 
 scaler = MinMaxScaler()
-df['10'] = scaler.fit_transform(df[['10']])
+df['25'] = scaler.fit_transform(df[['25']])
 
 # Assuming the first column contains the labels
 labels = df.iloc[:, 0]
@@ -49,7 +49,7 @@ marker_symbols = [
 ]
 
 # Choose a single new marker symbol for all machine types
-machine_marker_symbol = 'hexagon'
+machine_marker_symbol = 'star'
 
 # Determine the unique sample types and labels present
 sample_types = df['sample_type'].unique()
@@ -64,7 +64,7 @@ marker_map = {sample_type: marker_symbols[i % len(marker_symbols)] for i, sample
 
 fig = go.Figure()
 
-# Add traces for sample markers
+# Add a dummy trace for each marker symbol to show it in the legend with white color and black background
 for i, sample_type in enumerate(sample_types):
     fig.add_trace(go.Scatter(
         x=[None],
@@ -77,7 +77,7 @@ for i, sample_type in enumerate(sample_types):
             line=dict(color='black', width=2)
         ),
         name=f"Marker for {sample_type}",
-        legendgroup="SampleMarker",
+        legendgroup="Marker",  # Group all marker symbols under the name "Marker"
         showlegend=True
     ))
 
@@ -97,19 +97,19 @@ for label in unique_labels:
                 size=10,
                 color=color_map[label]
             ),
-            name=None,
-            legendgroup=label,
-            showlegend=False
+            name=None,  # Do not add label name here to avoid duplicates
+            legendgroup=label,  # Group all instances under the same label
+            showlegend=False  # Hide legend for these instances
         ))
 
-# Add traces for machine markers
+# Add a legend entry for each unique label with the same new marker shape
 for label in unique_labels:
     fig.add_trace(go.Scatter(
         x=[None],
         y=[None],
         mode='markers',
         marker=dict(
-            symbol=machine_marker_symbol,
+            symbol=machine_marker_symbol,  # Use the same new marker symbol for all machines
             size=10,
             color=color_map[label]
         ),
@@ -118,45 +118,19 @@ for label in unique_labels:
         showlegend=True
     ))
 
-# Add a dummy trace to create a line break in the legend
-fig.add_trace(go.Scatter(
-    x=[None],
-    y=[None],
-    mode='markers',
-    marker=dict(size=0),
-    name=' ' * 40,  # Add spaces for visual separation
-    showlegend=True
-))
-
-# Update layout to have separate columns for samples and machines in the legend
+# Update layout to add a proper legend and titles as before...
 fig.update_layout(
-    title={
-        'text': 't-SNE Visualization of Machine Datasets',
-        'y': 0.01,
-        'x': 0.5,
-        'xanchor': 'center',
-        'yanchor': 'bottom'
-    },
+    title='t-SNE Visualization of Machine Datasets',
     xaxis_title='t-SNE feature 1',
     yaxis_title='t-SNE feature 2',
-    legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=1.15,
-        xanchor="center",
-        x=0.5,
-        traceorder="normal"
-    ),
-    plot_bgcolor='white',
-    paper_bgcolor='white',
-    margin=dict(t=150, b=150),
+    legend_title="Legend",
     width=1100,
     height=600
 )
 
 # Save the figure to a PDF file
 pio.kaleido.scope.mathjax = None
-pio.write_image(fig, 'tsne_visualization_10.pdf', format='pdf')
+pio.write_image(fig, 'tsne_visualization_25.pdf', format='pdf')
 
 # Display the figure
 fig.show()

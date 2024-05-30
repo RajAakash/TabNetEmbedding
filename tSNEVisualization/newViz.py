@@ -14,13 +14,13 @@ except ImportError:
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'kaleido'])
 
 # Load the CSV file
-df = pd.read_csv('../machineEmbedding/machineEmbeddings_10.csv')
+df = pd.read_csv('../machineEmbedding/machineEmbeddings_25.csv')
 
 # Replace NaN values with the mean of their respective columns
 df.iloc[:, 1:] = df.iloc[:, 1:].fillna(df.iloc[:, 1:].mean())
 
 scaler = MinMaxScaler()
-df['10'] = scaler.fit_transform(df[['10']])
+df['25'] = scaler.fit_transform(df[['25']])
 
 # Assuming the first column contains the labels
 labels = df.iloc[:, 0]
@@ -78,6 +78,7 @@ for i, sample_type in enumerate(sample_types):
         ),
         name=f"Marker for {sample_type}",
         legendgroup="SampleMarker",
+        legendgrouptitle_text="Sample Markers",
         showlegend=True
     ))
 
@@ -114,19 +115,10 @@ for label in unique_labels:
             color=color_map[label]
         ),
         name=label,
-        legendgroup="Machine",
+        legendgroup="MachineMarker",
+        legendgrouptitle_text="Machine Markers",
         showlegend=True
     ))
-
-# Add a dummy trace to create a line break in the legend
-fig.add_trace(go.Scatter(
-    x=[None],
-    y=[None],
-    mode='markers',
-    marker=dict(size=0),
-    name=' ' * 40,  # Add spaces for visual separation
-    showlegend=True
-))
 
 # Update layout to have separate columns for samples and machines in the legend
 fig.update_layout(
@@ -145,10 +137,9 @@ fig.update_layout(
         y=1.15,
         xanchor="center",
         x=0.5,
-        traceorder="normal"
+        traceorder="grouped",
+        groupclick="toggleitem"
     ),
-    plot_bgcolor='white',
-    paper_bgcolor='white',
     margin=dict(t=150, b=150),
     width=1100,
     height=600
@@ -156,7 +147,7 @@ fig.update_layout(
 
 # Save the figure to a PDF file
 pio.kaleido.scope.mathjax = None
-pio.write_image(fig, 'tsne_visualization_10.pdf', format='pdf')
+pio.write_image(fig, 'tsne_visualization_25.pdf', format='pdf')
 
 # Display the figure
 fig.show()
