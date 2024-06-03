@@ -135,10 +135,39 @@ fig.update_layout(
         'y': 0.01,
         'x': 0.5,
         'xanchor': 'center',
-        'yanchor': 'bottom'
+        'yanchor': 'bottom',
+        'font': {'size': 16}
     },
     xaxis_title='t-SNE feature 1',
     yaxis_title='t-SNE feature 2',
+    plot_bgcolor='white',
+    paper_bgcolor='white',
+    shapes=[
+        # Line Horizontal
+        dict(
+            type='line',
+            x0=min(tsne_results[:, 0]-0.9),
+            y0=-13,
+            x1=max(tsne_results[:, 0]+1.2),
+            y1=-13,
+            line=dict(
+                color='black',
+                width=2
+            )
+        ),
+        # Line Vertical
+        dict(
+            type='line',
+            x0=-11.5,
+            y0=min(tsne_results[:, 1]-1.1),
+            x1=-11.5,
+            y1=max(tsne_results[:, 1]+3),
+            line=dict(
+                color='black',
+                width=2
+            )
+        )
+    ],
     legend=dict(
         orientation="h",
         yanchor="bottom",
@@ -147,8 +176,6 @@ fig.update_layout(
         x=0.5,
         traceorder="normal"
     ),
-    plot_bgcolor='white',
-    paper_bgcolor='white',
     margin=dict(t=150, b=150),
     width=1100,
     height=600
