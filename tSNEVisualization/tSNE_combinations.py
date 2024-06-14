@@ -23,7 +23,7 @@ features = df.iloc[:, 2:]
 
 # Apply t-SNE
 tsne = TSNE(n_components=2,
-            perplexity=5,  # Adjusted perplexity value for better visualization
+            perplexity=1,  # Adjusted perplexity value for better visualization
             early_exaggeration=1,
             learning_rate='auto',
             n_iter=10000,
