@@ -44,12 +44,12 @@ df['tsne-2d-two'] = tsne_results[:, 1]
 
 # Available marker symbols for the sample types
 marker_symbols = [
-    'circle', 'square', 'diamond', 'cross', 'x',
-    'triangle-up', 'triangle-down', 'pentagon'
+    'circle', 'cross', 'x',
+    'triangle-up', 'triangle-down', 'pentagon','hexagon','bowtie'
 ]
 
 # Choose a single new marker symbol for all machine types
-machine_marker_symbol = 'hexagon'
+machine_marker_symbol = 'square'
 
 # Determine the unique sample types and labels present
 sample_types = df['sample_type'].unique()
@@ -174,11 +174,13 @@ fig.update_layout(
         y=1.15,
         xanchor="center",
         x=0.5,
-        traceorder="normal"
+        traceorder="normal",
+        borderwidth=1,
+        bordercolor='black'
     ),
     margin=dict(t=150, b=150),
     width=1100,
-    height=600
+    height=600,
 )
 
 # Save the figure to a PDF file
