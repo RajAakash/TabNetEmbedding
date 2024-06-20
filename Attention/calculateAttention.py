@@ -26,7 +26,7 @@ def clean_and_convert_to_numeric(df, exclude_columns=[]):
     return df
 
 # Load CSV file
-df = pd.read_csv('../sourceFolderEmbeddings/finalBook1.csv')
+df = pd.read_csv('../MachineData/Normalized_separated_embeddings_10/Quartz.csv')
 
 # Clean the dataframe
 df_cleaned = clean_and_convert_to_numeric(df, exclude_columns=['machine', 'machine1'])
@@ -36,4 +36,4 @@ weighted_embeddings = apply_attention_and_convert_to_tensor(df_cleaned)
 weighted_features_df = pd.DataFrame(weighted_embeddings.numpy(), columns=df_cleaned.columns)
 
 # Save the final DataFrame with weighted features
-weighted_features_df.to_csv('../sourceFolderEmbeddings/finalBook1Concat.csv', index=False)
+weighted_features_df.to_csv('../MachineData/Attention_embeddings_and_Normalized/NormalizedQuartzWithAttention.csv', index=False)

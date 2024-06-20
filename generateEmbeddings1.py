@@ -4,7 +4,7 @@ import torch
 import numpy as np
 from tab_network import EmbeddingGenerator
 
-file_path = 'Corona-Laghos.csv'
+file_path = 'Embeddings_ApplicationNormalized/Kripke/Kripke(Quartz-Corona).csv'
 
 df = pd.read_csv(file_path)
 # Encode categorical columns
@@ -48,6 +48,6 @@ X_tensor = torch.tensor(X.values, dtype=torch.float32)
 embeddings = embedding_generator.forward(X_tensor)
 embeddings_df = pd.DataFrame(embeddings.detach().numpy())
 print(embeddings)
-embeddings_df.to_csv('appembeddingsLaghos.csv', index=False)
+embeddings_df.to_csv('Embeddings_ApplicationNormalized/Kripke/Kripke(Quartz-Corona).csv', index=False)
 print(embeddings.shape)
 print(df.shape)

@@ -4,7 +4,10 @@ import plotly.graph_objects as go
 import plotly.io as pio
 
 # Load the data
-df = pd.read_csv('../variance_source_and_target/CombinedVarianceWeights.csv')
+# df = pd.read_csv('../averageFilledMachineEmbeddings-method1/finalCombinedConcatenation.csv')
+df = pd.read_csv('../weighted_mergedSourceAndTarget/Combined_weightedAttention.csv')
+# df = pd.read_csv('../variance_source_and_target/CombinedVarianceWeights.csv')
+
 
 # Check for 'kripke', 'sw4lite', 'Laghos', 'minivite', and 'TestDFFT' samples
 print("Number of 'kripke' samples:", df[df['Apps'] == 'kripke'].shape[0])
@@ -26,7 +29,7 @@ features = df.iloc[:, 2:]
 
 # Apply t-SNE
 tsne = TSNE(n_components=2,
-            perplexity=5,  # Adjusted perplexity value for better visualization
+            perplexity=10,  # Adjusted perplexity value for better visualization
             early_exaggeration=1,
             learning_rate='auto',
             n_iter=10000,
@@ -41,8 +44,8 @@ df['tsne-2d-two'] = tsne_results[:, 1]
 app_relation_map = {
     ('kripke', 'q-r'): {'color': 'red', 'marker': 'square'},
     ('kripke', 'q-c'): {'color': 'darkred', 'marker': 'circle'},
-    ('sw4Lite', 'q-r'): {'color': 'blue', 'marker': 'square'},
-    ('sw4Lite', 'q-c'): {'color': 'blueviolet', 'marker': 'circle'},
+    ('sw4lite', 'q-r'): {'color': 'blue', 'marker': 'square'},
+    ('sw4lite', 'q-c'): {'color': 'lightblue', 'marker': 'circle'},
     ('Laghos', 'q-r'): {'color': 'green', 'marker': 'square'},
     ('Laghos', 'q-c'): {'color': 'lightgreen', 'marker': 'circle'},
     ('miniVite', 'q-r'): {'color': 'purple', 'marker': 'square'},

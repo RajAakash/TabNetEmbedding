@@ -156,11 +156,35 @@ fig.update_layout(
             )
         ),
         # Line Vertical
+        
         dict(
             type='line',
             x0=-11.5,
             y0=min(tsne_results[:, 1]-1.1),
             x1=-11.5,
+            y1=max(tsne_results[:, 1]+3),
+            line=dict(
+                color='black',
+                width=2
+            )
+        ),
+        
+        dict(
+            type='line',
+            x0=max(tsne_results[:, 0]+1.2),
+            y0=min(tsne_results[:, 1]-1.1),
+            x1=max(tsne_results[:, 0]+1.2),
+            y1=max(tsne_results[:, 1]+3),
+            line=dict(
+                color='black',
+                width=2
+            )
+        ),
+        dict(
+            type='line',
+            x0=min(tsne_results[:, 0]-0.9),
+            y0=max(tsne_results[:, 1]+3),
+            x1=max(tsne_results[:, 0]+1.2),
             y1=max(tsne_results[:, 1]+3),
             line=dict(
                 color='black',
@@ -177,8 +201,8 @@ fig.update_layout(
         traceorder="normal"
     ),
     margin=dict(t=150, b=150),
-    width=1100,
-    height=600
+    width=1200,
+    height=800
 )
 
 # Save the figure to a PDF file
