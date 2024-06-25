@@ -4,7 +4,7 @@ import torch
 import numpy as np
 from tab_network import EmbeddingGenerator
 
-file_path = 'MachineData/Normalized_machine.csv'
+file_path = 'Normalized/Normalized_machine.csv'
 
 df = pd.read_csv(file_path)
 X_title=df['machine']
@@ -41,6 +41,6 @@ embeddings_df['machine']=X_title
 columns = ['machine'] + [col for col in embeddings_df.columns if col != 'machine']
 embeddings_df = embeddings_df[columns]
 print(embeddings)
-embeddings_df.to_csv('MachineData/Embeddings_Normalized_machine.csv', index=False)
+embeddings_df.to_csv('Normalized_embeddings_machine.csv', index=False)
 print(embeddings.shape)
 print(df.shape)

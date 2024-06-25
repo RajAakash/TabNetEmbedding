@@ -5,23 +5,23 @@ import plotly.io as pio
 
 # Load the data
 # df = pd.read_csv('../averageFilledMachineEmbeddings-method1/finalCombinedConcatenation.csv')
-df = pd.read_csv('../weighted_mergedSourceAndTarget/Combined_weightedAttention.csv')
+df = pd.read_csv('../Normalized/Embeddings_ApplicationNormalized_Columns/new_Attention_combined.csv')
 # df = pd.read_csv('../variance_source_and_target/CombinedVarianceWeights.csv')
 
 
 # Check for 'kripke', 'sw4lite', 'Laghos', 'minivite', and 'TestDFFT' samples
 print("Number of 'kripke' samples:", df[df['Apps'] == 'kripke'].shape[0])
-print("Number of 'sw4lite' samples:", df[df['Apps'] == 'sw4Lite'].shape[0])
-print("Number of 'Laghos' samples:", df[df['Apps'] == 'Laghos'].shape[0])
+print("Number of 'sw4lite' samples:", df[df['Apps'] == 'sw4lite'].shape[0])
+print("Number of 'Laghos' samples:", df[df['Apps'] == 'laghos'].shape[0])
 print("Number of 'minivite' samples:", df[df['Apps'] == 'miniVite'].shape[0])
-print("Number of 'TestDFFT' samples:", df[df['Apps'] == 'TestDFFT'].shape[0])
+print("Number of 'TestDFFT' samples:", df[df['Apps'] == 'TestDfft'].shape[0])
 
 # Check for 'q-r' and 'q-c' relations
 print("Number of 'q-r' samples:", df[df['relation'] == 'q-r'].shape[0])
 print("Number of 'q-c' samples:", df[df['relation'] == 'q-c'].shape[0])
 
 # Fill NaN values with the mean of their respective columns
-df.iloc[:, 2:] = df.iloc[:, 2:].fillna(df.iloc[:, 2:].mean())
+df.iloc[:, 2:] = df.iloc[:, 2:].fillna(0)
 
 # Extract labels and features
 labels = df['relation']
@@ -29,7 +29,7 @@ features = df.iloc[:, 2:]
 
 # Apply t-SNE
 tsne = TSNE(n_components=2,
-            perplexity=10,  # Adjusted perplexity value for better visualization
+            perplexity=4,  # Adjusted perplexity value for better visualization
             early_exaggeration=1,
             learning_rate='auto',
             n_iter=10000,
@@ -46,12 +46,12 @@ app_relation_map = {
     ('kripke', 'q-c'): {'color': 'darkred', 'marker': 'circle'},
     ('sw4lite', 'q-r'): {'color': 'blue', 'marker': 'square'},
     ('sw4lite', 'q-c'): {'color': 'lightblue', 'marker': 'circle'},
-    ('Laghos', 'q-r'): {'color': 'green', 'marker': 'square'},
-    ('Laghos', 'q-c'): {'color': 'lightgreen', 'marker': 'circle'},
+    ('laghos', 'q-r'): {'color': 'green', 'marker': 'square'},
+    ('laghos', 'q-c'): {'color': 'lightgreen', 'marker': 'circle'},
     ('miniVite', 'q-r'): {'color': 'purple', 'marker': 'square'},
     ('miniVite', 'q-c'): {'color': 'darkmagenta', 'marker': 'circle'},
-    ('TestDFFT', 'q-r'): {'color': 'orange', 'marker': 'square'},
-    ('TestDFFT', 'q-c'): {'color': 'deeppink', 'marker': 'circle'},
+    ('TestDfft', 'q-r'): {'color': 'orange', 'marker': 'square'},
+    ('TestDfft', 'q-c'): {'color': 'deeppink', 'marker': 'circle'},
 }
 
 fig = go.Figure()
@@ -74,21 +74,52 @@ for app_relation, style in app_relation_map.items():
         showlegend=True
     ))
 
+# # Add dummy traces for the shapes legend
+# fig.add_trace(go.Scatter(
+#     x=[None],
+#     y=[None],
+#     mode='markers',
+#     marker=dict(
+#         symbol='square',
+#         size=10,
+#         color='black'
+#     ),
+#     legendgroup='Shapes',
+#     showlegend=True,
+#     name='q-r'
+# ))
+
+# fig.add_trace(go.Scatter(
+#     x=[None],
+#     y=[None],
+#     mode='markers',
+#     marker=dict(
+#         symbol='circle',
+#         size=10,
+#         color='black'
+#     ),
+#     legendgroup='Shapes',
+#     showlegend=True,
+#     name='q-c'
+# ))
+
 # Update layout to add a proper legend and titles
 fig.update_layout(
-    title='t-SNE Visualization with Unique Colors and Markers for Applications and Relations',
+    title=' ',
     xaxis_title='t-SNE feature 1',
     yaxis_title='t-SNE feature 2',
-    legend_title="Legend",
-    width=1400,
-    height=1000,
-    margin=dict(l=40, r=40, t=40, b=40),  # Adding margins
+    width=1200,
+    height=800,
+    margin=dict(l=40, r=40, t=40, b=100),  # Adding bottom margin for title
     paper_bgcolor='rgba(255,255,255,1)',  # White background
     plot_bgcolor='rgba(255,255,255,1)',  # White plot area
     showlegend=True,
     legend=dict(
-        x=1,
-        y=1,
+        x=0.5,
+        y=1.1,
+        orientation='h',
+        xanchor='center',
+        yanchor='bottom',
         bgcolor='rgba(255,255,255,1)',
         bordercolor='black',
         borderwidth=2
@@ -112,6 +143,35 @@ fig.update_layout(
                 width=2,
             ),
             xref='paper', yref='paper'
+        )
+    ],
+    annotations=[
+        dict(
+            x=0.5,
+            y=-0.15,
+            xref='paper',
+            yref='paper',
+            text='t-SNE Visualization with attention',
+            showarrow=False,
+            font=dict(
+                size=16
+            )
+        ),
+        # Add annotation for shapes legend box
+        # Updated annotation for shapes legend box with circle description
+        dict(
+            x=0.5,
+            y=1.07,
+            xref='paper',
+            yref='paper',
+            text='Shapes: q-r - Square, q-c - Circle',
+            showarrow=False,
+            font=dict(
+                size=12
+            ),
+            bgcolor='rgba(255,255,255,1)',
+            bordercolor='black',
+            borderwidth=1
         )
     ]
 )

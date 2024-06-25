@@ -14,13 +14,13 @@ except ImportError:
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'kaleido'])
 
 # Load the CSV file
-df = pd.read_csv('../machineEmbedding/machineEmbeddings_10.csv')
+df = pd.read_csv('../autoEncoders/combined_data_with_embeddingsWord2Vec(1).csv')
 
 # Replace NaN values with the mean of their respective columns
 df.iloc[:, 1:] = df.iloc[:, 1:].fillna(df.iloc[:, 1:].mean())
 
 scaler = MinMaxScaler()
-df['10'] = scaler.fit_transform(df[['10']])
+df['core'] = scaler.fit_transform(df[['core']])
 
 # Assuming the first column contains the labels
 labels = df.iloc[:, 0]
@@ -31,8 +31,8 @@ df['sample_type'] = ['Sample ' + str(i % 8 + 1) for i in range(len(df))]
 
 # Apply t-SNE
 tsne = TSNE(n_components=2,
-            perplexity=15,
-            early_exaggeration=1,
+            perplexity=30,
+            early_exaggeration=10,
             learning_rate='auto',
             n_iter=10000,
             random_state=42)
@@ -146,7 +146,7 @@ fig.update_layout(
         # Line Horizontal
         dict(
             type='line',
-            x0=min(tsne_results[:, 0]-0.9),
+            x0=min(tsne_results[:, 0]-1.6),
             y0=-13,
             x1=max(tsne_results[:, 0]+1.2),
             y1=-13,
@@ -159,9 +159,23 @@ fig.update_layout(
         
         dict(
             type='line',
-            x0=-11.5,
-            y0=min(tsne_results[:, 1]-1.1),
-            x1=-11.5,
+            x0=-6,
+            y0=min(tsne_results[:, 1]-8),
+            x1=-6,
+            y1=max(tsne_results[:, 1]+3),
+            line=dict(
+                color='black',
+                width=2
+            )
+        ),
+        
+        # Line vertical
+        
+        dict(
+            type='line',
+            x0=max(tsne_results[:, 0]+1.2),
+            y0=min(tsne_results[:, 1]-8),
+            x1=max(tsne_results[:, 0]+1.2),
             y1=max(tsne_results[:, 1]+3),
             line=dict(
                 color='black',
@@ -172,17 +186,6 @@ fig.update_layout(
         dict(
             type='line',
             x0=max(tsne_results[:, 0]+1.2),
-            y0=min(tsne_results[:, 1]-1.1),
-            x1=max(tsne_results[:, 0]+1.2),
-            y1=max(tsne_results[:, 1]+3),
-            line=dict(
-                color='black',
-                width=2
-            )
-        ),
-        dict(
-            type='line',
-            x0=min(tsne_results[:, 0]-0.9),
             y0=max(tsne_results[:, 1]+3),
             x1=max(tsne_results[:, 0]+1.2),
             y1=max(tsne_results[:, 1]+3),
@@ -190,7 +193,19 @@ fig.update_layout(
                 color='black',
                 width=2
             )
-        )
+        ),
+        
+        dict(
+            type='line',
+            x0=min(tsne_results[:, 0]-1.6),
+            y0=7.35,
+            x1=max(tsne_results[:, 0]+1.2),
+            y1=7.35,
+            line=dict(
+                color='black',
+                width=2
+            )
+        ),
     ],
     legend=dict(
         orientation="h",
@@ -201,8 +216,8 @@ fig.update_layout(
         traceorder="normal"
     ),
     margin=dict(t=150, b=150),
-    width=1200,
-    height=800
+    width=1400,
+    height=1000
 )
 
 # Save the figure to a PDF file
