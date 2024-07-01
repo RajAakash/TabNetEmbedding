@@ -3,6 +3,8 @@ from sklearn.manifold import TSNE
 import plotly.graph_objects as go
 import plotly.express as px
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
 import plotly.io as pio
 import sys
 
@@ -38,9 +40,26 @@ tsne = TSNE(n_components=2,
             random_state=42)
 tsne_results = tsne.fit_transform(features)
 
+n_clusters = 15  # Adjust based on your data
+kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+cluster_labels = kmeans.fit_predict(tsne_results)
+
+# Calculate clustering evaluation metrics
+silhouette_avg = silhouette_score(tsne_results, cluster_labels)
+db_index = davies_bouldin_score(tsne_results, cluster_labels)
+calinski_harabasz = calinski_harabasz_score(tsne_results, cluster_labels)
+
+print(f"Silhouette Score: {silhouette_avg}")
+print(f"Davies-Bouldin Index: {db_index}")
+print(f"Calinski-Harabasz Index: {calinski_harabasz}")
+
 # Add the t-SNE results to the dataframe
 df['tsne-2d-one'] = tsne_results[:, 0]
 df['tsne-2d-two'] = tsne_results[:, 1]
+
+# Assign colors to each cluster
+colors = px.colors.qualitative.Plotly
+color_map = {i: colors[i % len(colors)] for i in range(n_clusters)}
 
 # Available marker symbols for the sample types
 marker_symbols = [
@@ -49,7 +68,7 @@ marker_symbols = [
 ]
 
 # Choose a single new marker symbol for all machine types
-machine_marker_symbol = 'star'
+machine_marker_symbol = 'square'
 
 # Determine the unique sample types and labels present
 sample_types = df['sample_type'].unique()
@@ -102,6 +121,7 @@ for label in unique_labels:
             showlegend=False  # Hide legend for these instances
         ))
 
+
 # Add a legend entry for each unique label with the same new marker shape
 for label in unique_labels:
     fig.add_trace(go.Scatter(
@@ -117,6 +137,26 @@ for label in unique_labels:
         legendgroup="Machine",
         showlegend=True
     ))
+
+# Assign colors to each cluster
+colors = px.colors.qualitative.Plotly
+color_map = {i: colors[i % len(colors)] for i in range(n_clusters)}
+
+# fig = go.Figure()
+
+# # Plot each cluster
+# for i in range(n_clusters):
+#     df_subset = df[cluster_labels == i]
+#     fig.add_trace(go.Scatter(
+#         x=df_subset['tsne-2d-one'],
+#         y=df_subset['tsne-2d-two'],
+#         mode='markers',
+#         marker=dict(
+#             size=10,
+#             color=color_map[i]
+#         ),
+#         name=f"Cluster {i}"
+#     ))
 
 # Update layout to add a proper legend and titles as before...
 fig.update_layout(
