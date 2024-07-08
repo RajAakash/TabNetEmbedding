@@ -34,5 +34,5 @@ def min_max_normalize(data):
 # Example usages
 data = pd.read_csv('Machine.csv')
 normalized_data = min_max_normalize(data)
-normalized_data.to_csv('Normalized_machine.csv')
+normalized_data.to_csv('Normalized_machine1.csv')
 # print(normalized_data)

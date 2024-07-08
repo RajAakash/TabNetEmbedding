@@ -17,7 +17,7 @@ rest_of_data = data.iloc[:, 1:]
 vectorizer = TfidfVectorizer(max_features=1000)  # Adjust the number of features
 tfidf_features = vectorizer.fit_transform(text_data).toarray()
 
-# Building the autoencoder
+# Building the autoencoder˜
 input_dim = tfidf_features.shape[1]
 encoding_dim = 10  # Embeddings size
 
